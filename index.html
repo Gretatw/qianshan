@@ -1,0 +1,622 @@
+<title>臺灣淺山故事館</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面概念：沿著「海平面→淺山→高山」的步道，頂部 10 站導覽，每站單欄閱讀＋互動面板 */
+:root{
+  --bg:#edf0e8; --surface:#f8faf4; --sunk:#e1e7db; --ink:#1d2820; --muted:#566659; --line:#c9d3c3;
+  --forest:#2d6a45; --forest-soft:#d5e6d4; --ochre:#a96d15; --ochre-soft:#f1e2c4; --mud:#837d6e; --danger:#b03c2a; --danger-soft:#f4d9d2;
+  --plain:#e3dcb4; --shallow:#8dbb76; --high:#557a63; --sea:#dfe9ec;
+  --f-display:"LXGW WenKai TC","Kaiti TC","KaiTi",serif;
+  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121915; --surface:#1a231e; --sunk:#222d27; --ink:#e4ebe2; --muted:#9db0a2; --line:#34433a;
+  --forest:#7cc595; --forest-soft:#22392b; --ochre:#e3a84f; --ochre-soft:#3a2e19; --mud:#aaa392; --danger:#ef806b; --danger-soft:#3d221d;
+  --plain:#3a3826; --shallow:#3d6a3c; --high:#2c4837; --sea:#16232a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121915; --surface:#1a231e; --sunk:#222d27; --ink:#e4ebe2; --muted:#9db0a2; --line:#34433a;
+  --forest:#7cc595; --forest-soft:#22392b; --ochre:#e3a84f; --ochre-soft:#3a2e19; --mud:#aaa392; --danger:#ef806b; --danger-soft:#3d221d;
+  --plain:#3a3826; --shallow:#3d6a3c; --high:#2c4837; --sea:#16232a; color-scheme:dark}
+[hidden]{display:none!important}
+section.view[hidden]{display:none!important}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.75}
+img,svg{max-width:100%}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding-block:12px 4px}
+.brand h1{font-family:var(--f-display);font-size:1.6rem;margin:0;letter-spacing:.04em}
+.brand span{color:var(--muted);font-size:.85rem}
+nav.tabs{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;padding-block:6px 10px;overflow:hidden}
+nav.tabs .tab{font-family:inherit;background:transparent;appearance:none;-webkit-appearance:none;line-height:1.5;min-width:0;text-align:center;text-decoration:none;color:var(--muted);font-size:clamp(.66rem,1.45vw,.88rem);padding:5px 2px;border-radius:999px;border:1px solid transparent;white-space:nowrap;cursor:pointer;overflow:hidden;text-overflow:clip}
+nav.tabs .tab:hover{border-color:var(--line)}
+/* 平板：一排 10 格，數字在上、名稱在下 */
+@media (max-width:860px){nav.tabs .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.2;border-radius:10px;padding:6px 1px;font-size:clamp(.68rem,1.6vw,.82rem)}nav.tabs .tab b{margin-right:0;font-size:1.15em}}
+/* 手機：5 欄 × 2 排，數字＋文字都看得到 */
+@media (max-width:620px){
+  nav.tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding-block:4px 10px}
+  nav.tabs .tab{font-size:.78rem;padding:7px 2px;border:1px solid var(--line);background:var(--bg);min-height:52px}
+  nav.tabs .tab b{font-size:1.05rem}
+  nav.tabs .tab[aria-current="page"]{background:var(--forest);border-color:var(--forest)}
+  .brand{padding-block:8px 2px}.brand h1{font-size:1.3rem}.brand span{font-size:.75rem}
+}
+@media (max-width:360px){nav.tabs .tab{font-size:.7rem}nav.tabs{gap:4px}}
+nav.tabs .tab b{font-family:var(--f-display);font-weight:700;margin-right:4px;color:var(--ochre)}
+nav.tabs .tab[aria-current="page"]{background:var(--forest);color:var(--surface);border-color:var(--forest)}
+nav.tabs .tab[aria-current="page"] b{color:var(--surface)}
+nav.tabs .tab:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--ochre);outline-offset:2px}
+main{padding-block:20px 60px}
+section.view{display:grid;gap:20px}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;color:var(--ochre);font-weight:700}
+h2{font-family:var(--f-display);font-size:2rem;line-height:1.3;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-size:1.3rem;margin:0 0 6px;text-wrap:balance}
+h4{margin:0 0 4px;font-size:1rem}
+p{margin:0}
+.lead{max-width:62ch;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.grid2>*,.grid3>*{min-width:0}
+ul.clean{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.chip{display:inline-block;font-size:.75rem;padding:1px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.lv1{background:var(--danger-soft);color:var(--danger);border-color:var(--danger)}
+.lv2{background:var(--ochre-soft);color:var(--ochre);border-color:var(--ochre)}
+.lv3{background:var(--forest-soft);color:var(--forest);border-color:var(--forest)}
+.btn{font:inherit;font-size:.9rem;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--forest)}
+.btn.on{background:var(--forest);color:var(--surface);border-color:var(--forest)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.scrollx{overflow-x:auto}
+.note{font-size:.82rem;color:var(--muted)}
+.src{font-size:.8rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.src a{color:var(--forest)}
+/* 地圖 */
+.mapbox{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:720px){.mapbox{grid-template-columns:1fr}}
+#twmap{width:100%;max-width:380px;height:auto;display:block;margin:0 auto}
+#twmap .hot{cursor:pointer}
+#twmap .hot circle{fill:var(--ochre);stroke:var(--surface);stroke-width:2}
+#twmap .hot.sel circle{fill:var(--danger)}
+#twmap text{font-family:var(--f-body);fill:var(--ink)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px;border:1px solid var(--line)}
+#profile{width:100%;height:auto;display:block}
+#profile text{font-family:var(--f-body);fill:var(--muted);font-size:11px}
+input[type=range]{width:100%;accent-color:var(--forest)}
+.readout{font-family:var(--f-display);font-size:1.25rem}
+/* 食物網 */
+#web{width:100%;min-width:560px;height:auto;display:block}
+#web .n rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5;rx:8}
+#web .n text{font-family:var(--f-body);font-size:12.5px;fill:var(--ink);text-anchor:middle;pointer-events:none}
+#web .n{cursor:pointer}
+#web .e{stroke:var(--line);stroke-width:1.3;fill:none;marker-end:url(#arw)}
+#web .e.hl{stroke:var(--forest);stroke-width:2.6}
+#web .e.prey{stroke:var(--ochre);stroke-width:2.6}
+#web .e.tox{stroke:var(--danger);stroke-width:3}
+#web .n.focus rect{fill:var(--forest);stroke:var(--forest)}
+#web .n.focus text{fill:var(--surface)}
+#web .n.rel rect{stroke:var(--forest);stroke-width:2.5}
+#web .n.tox rect{fill:var(--danger-soft);stroke:var(--danger);stroke-width:2.5}
+#web .n.dim{opacity:.35}#web .e.dim{opacity:.15}
+#web .lvl{font-size:11px;fill:var(--muted);font-family:var(--f-body)}
+.cards{display:flex;gap:8px;flex-wrap:wrap}
+.cards button{font:inherit;padding:8px 14px;border-radius:8px;border:1px dashed var(--mud);background:var(--sunk);color:var(--ink);cursor:pointer}
+.cards button[disabled]{opacity:.4;cursor:default}
+.chain{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:40px}
+.chain span{background:var(--forest-soft);color:var(--forest);padding:4px 10px;border-radius:6px;font-weight:500}
+/* 物種 */
+.sp{display:grid;gap:8px;align-content:start}
+.sp header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.sp h3{margin:0}
+.sp .lat{font-style:italic;font-size:.8rem;color:var(--muted)}
+.sp dl{margin:0;display:grid;gap:6px}
+.sp dt{font-size:.75rem;letter-spacing:.1em;color:var(--ochre);font-weight:700}
+.sp dd{margin:0;font-size:.92rem}
+.tn{font-size:.72rem;background:var(--ochre);color:var(--surface);padding:1px 7px;border-radius:4px}
+/* 表格 */
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;vertical-align:top}
+thead th{font-family:var(--f-display);font-size:1.05rem;background:var(--sunk)}
+tbody th{white-space:nowrap;color:var(--ochre)}
+/* 時間軸 */
+.tl{display:grid;gap:0;border-left:2px solid var(--line);margin-left:6px}
+.tl div{position:relative;padding:0 0 14px 18px}
+.tl div::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--forest)}
+.tl b{font-family:var(--f-display);color:var(--forest);margin-right:6px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap}
+/* 借鏡 */
+details.lesson{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+details.lesson summary{cursor:pointer;font-family:var(--f-display);font-size:1.15rem;list-style-position:outside}
+details.lesson[open]{border-color:var(--forest)}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px;margin-top:10px}
+.three>div{background:var(--sunk);border-radius:8px;padding:10px 12px;font-size:.9rem;min-width:0}
+.three h4{font-size:.8rem;letter-spacing:.1em;color:var(--muted)}
+/* 模擬 */
+.simgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.parcel{border-radius:8px;padding:8px;border:1px solid var(--line);display:grid;gap:4px;min-height:92px;align-content:space-between}
+.parcel label{font-size:.75rem;color:var(--muted)}
+.parcel select{font:inherit;font-size:.82rem;width:100%;padding:4px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.p-forest{background:var(--high);}.p-forest label{color:var(--surface)}
+.p-friendly,.p-paddy{background:var(--forest-soft)}
+.p-fallow{background:var(--plain)}
+.p-conv{background:var(--ochre-soft)}
+.p-solar{background:var(--sunk)}
+.p-house{background:var(--danger-soft)}
+.meter{display:grid;grid-template-columns:7.5em 1fr 3em;gap:8px;align-items:center;font-size:.88rem}
+.meter .bar{height:12px;background:var(--sunk);border-radius:6px;overflow:hidden}
+.meter .bar i{display:block;height:100%;background:var(--forest);transition:width .4s}
+.meter .bar i.warn{background:var(--ochre)}.meter .bar i.bad{background:var(--danger)}
+.meter b{font-variant-numeric:tabular-nums;text-align:right}
+.toggle{display:flex;gap:8px;align-items:flex-start;font-size:.9rem}
+.toggle input{margin-top:6px;accent-color:var(--forest)}
+/* 測驗 */
+.q{display:grid;gap:8px}
+.q .opts{display:grid;gap:6px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--forest-soft);border-color:var(--forest)}
+.q .opts button.wrong{background:var(--danger-soft);border-color:var(--danger)}
+.fb{font-size:.9rem;color:var(--muted)}
+textarea{width:100%;min-height:110px;font:inherit;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);box-sizing:border-box}
+ol.steps{margin:0;padding-left:1.4em;display:grid;gap:8px}
+.kbd{font-family:ui-monospace,monospace;font-size:.85em;background:var(--sunk);padding:1px 6px;border-radius:4px}
+.tnhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center}
+@media (max-width:720px){.tnhead{grid-template-columns:1fr}}
+.big{font-family:var(--f-display);font-size:2.4rem;color:var(--ochre);line-height:1.1}
+.site-foot{border-top:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:.85rem;text-align:center;padding-block:18px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><h1>臺灣淺山故事館</h1><span>海拔 1000 公尺以下，人與野生動物共用的家</span></div>
+    <nav class="tabs" id="tabs" aria-label="展區導覽"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+
+<!-- 1 地圖 -->
+<section class="view" data-view="map">
+  <div><div class="eyebrow">第一展區・地理分布</div><h2>淺山在哪裡？</h2>
+  <p class="lead">淺山泛指海拔約 100～1000 公尺的丘陵與低山，夾在西部平原和中央山脈之間。這裡多是私有地、果園、竹林與聚落，卻住著近六成的保育類野生動物。點地圖上的橘點，看看各地淺山的樣貌。</p></div>
+  <div class="mapbox">
+    <div class="panel">
+      <svg id="twmap" viewBox="0 0 370 660" role="img" aria-label="臺灣海拔分層示意地圖"></svg>
+      <div class="legend" style="margin-top:8px"><span><i style="background:var(--plain)"></i>平原 &lt;100 m</span><span><i style="background:var(--shallow)"></i>淺山 100–1000 m</span><span><i style="background:var(--high)"></i>中高海拔 &gt;1000 m</span></div>
+      <div class="row" style="margin-top:8px" id="layerBtns">
+        <button class="btn on" data-layer="shallow">只看淺山帶</button>
+        <button class="btn on" data-layer="high">顯示高山</button>
+      </div>
+      <p class="note" style="margin-top:6px">地圖為教學示意，海拔分帶以簡化多邊形繪製，非精確測繪。</p>
+    </div>
+    <div class="panel" id="hotInfo" aria-live="polite"></div>
+  </div>
+  <div class="panel">
+    <h3>沿著北緯 23.4° 走一趟：從東石海邊到玉山再到東海岸</h3>
+    <p class="note">拖動滑桿，看你所在的位置海拔多少、屬於哪一層。</p>
+    <div class="scrollx"><svg id="profile" viewBox="0 0 640 230" role="img" aria-label="臺灣東西向海拔剖面"></svg></div>
+    <input type="range" id="pf" min="0" max="135" value="34" aria-label="剖面位置（公里）">
+    <div class="row" style="justify-content:space-between"><span class="readout" id="pfRead"></span><span class="chip" id="pfZone"></span></div>
+    <p id="pfText" style="margin-top:6px"></p>
+  </div>
+</section>
+
+<!-- 2 生態系 -->
+<section class="view" data-view="foodweb" hidden>
+  <div><div class="eyebrow">第二展區・生態系</div><h2>誰吃誰？淺山的食物網</h2>
+  <p class="lead">淺山是森林、草地、農田、溪流交錯的「鑲嵌地景」，生產者、消費者與分解者在這裡串成好幾條食物鏈，交織成食物網。點選任一物種：<span style="color:var(--ochre)">橘線</span>是牠吃的，<span style="color:var(--forest)">綠線</span>是吃牠的。</p></div>
+  <div class="panel">
+    <div class="row" style="margin-bottom:10px">
+      <button class="btn" id="toxBtn">模擬：農田撒下滅鼠藥</button>
+      <button class="btn" id="webReset">清除選取</button>
+    </div>
+    <div class="scrollx"><svg id="web" viewBox="0 0 640 450" role="img" aria-label="淺山食物網"></svg></div>
+    <p id="webInfo" style="margin-top:10px" aria-live="polite">請點選一個物種。</p>
+    <p class="note" style="margin-top:6px">分解者（真菌、細菌、蚯蚓、糞金龜）把所有生物的遺骸與排遺分解回土壤養分，讓生產者再利用，圖中以右下角方塊代表。</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>小挑戰：排出一條食物鏈</h3>
+      <p class="note">從「生產者」開始，依序點卡片。</p>
+      <div class="row" style="margin:8px 0" id="puzBtns"></div>
+      <div class="cards" id="puzCards"></div>
+      <div class="chain" id="puzChain" style="margin-top:10px"></div>
+      <p class="fb" id="puzFb"></p>
+    </div>
+    <div class="panel">
+      <h3>生態鏈的三個關鍵概念</h3>
+      <ul class="clean">
+        <li><b>能量金字塔</b>：每往上一層，大約只剩 10% 能量，所以石虎、草鴞這類頂層掠食者數量本來就少，一點干擾就很危險。</li>
+        <li><b>生物累積（二次毒害）</b>：老鼠吃了滅鼠藥沒有馬上死，被石虎、草鴞、蛇吃下後毒素在掠食者體內累積。</li>
+        <li><b>邊緣效應</b>：森林與農田交界處食物最多樣，淺山動物最愛在這裡覓食，也最容易和人衝突。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3 物種 -->
+<section class="view" data-view="species" hidden>
+  <div><div class="eyebrow">第三展區・物種檔案</div><h2>淺山住民與牠們的處境</h2>
+  <p class="lead">依《野生動物保育法》，保育類分為第一級（瀕臨絕種）、第二級（珍貴稀有）、第三級（其他應予保育）。用按鈕篩選，看看每種動物在哪裡覓食、遇到什麼問題、現在有哪些保育行動。</p></div>
+  <div class="row" id="spFilter">
+    <button class="btn on" data-f="all">全部</button>
+    <button class="btn" data-f="1">第一級 瀕臨絕種</button>
+    <button class="btn" data-f="2">第二級 珍貴稀有</button>
+    <button class="btn" data-f="3">第三級</button>
+    <button class="btn" data-f="0">一般類</button>
+    <button class="btn" data-f="tn">臺南可見</button>
+  </div>
+  <div class="grid3" id="spList"></div>
+  <p class="src">保育等級依農業部《陸域保育類野生動物名錄》；2019 年修正時食蛇龜、柴棺龜升為第一級，黃鸝降為第二級，臺灣獼猴、山羌、白鼻心移為一般類。名錄可能再修正，教學時請以林業及自然保育署最新公告為準。</p>
+</section>
+
+<!-- 4 特色 -->
+<section class="view" data-view="features" hidden>
+  <div><div class="eyebrow">第四展區・兩地特色</div><h2>臺灣淺山 × 日本里山</h2>
+  <p class="lead">兩者都是「人住在山腳、靠山吃飯」的地方，也都是生物多樣性的熱點。差別在於日本里山是幾百年農村生活形塑的文化地景，臺灣淺山則在短短幾十年間經歷開墾、經濟作物與開發的劇烈變化。</p></div>
+  <div class="grid2">
+    <div class="panel"><h3>臺灣淺山的發展特色</h3><ul class="clean" id="twFeat"></ul></div>
+    <div class="panel"><h3>日本里山的發展特色</h3><ul class="clean" id="jpFeat"></ul></div>
+  </div>
+  <div class="panel">
+    <h3>臺灣走向「里山化」的里程碑</h3>
+    <div class="tl" id="twTl"></div>
+  </div>
+</section>
+
+<!-- 5 日本里山 -->
+<section class="view" data-view="satoyama" hidden>
+  <div><div class="eyebrow">第五展區・日本里山</div><h2>里山：村落、雜木林、谷戶田與溜池</h2>
+  <p class="lead">「里山」（さとやま）指聚落周圍、經人長期利用的山林、農田、水塘、草地組成的地景。透過砍柴、割草、輪伐，人為的適度干擾反而維持了多樣的棲地。</p></div>
+  <div class="subtabs" id="jpTabs">
+    <button class="btn on" data-k="feat">特色</button>
+    <button class="btn" data-k="dev">發展歷程</button>
+    <button class="btn" data-k="adv">優勢</button>
+    <button class="btn" data-k="dif">困境</button>
+  </div>
+  <div class="panel" id="jpBody"></div>
+</section>
+
+<!-- 6 差異 -->
+<section class="view" data-view="compare" hidden>
+  <div><div class="eyebrow">第六展區・差異比較</div><h2>同樣是山腳下，哪裡不一樣？</h2>
+  <p class="lead">把兩地放在同一張表上比較。手機上可以左右滑動表格。</p></div>
+  <div class="panel scrollx"><table id="cmpTable"></table></div>
+  <div class="panel"><h3>想一想</h3><p>表中哪一個差異，讓臺灣不能「直接照抄」日本的做法？請用「因為……所以臺灣需要……」的句型回答。</p></div>
+</section>
+
+<!-- 7 借鏡 -->
+<section class="view" data-view="lessons" hidden>
+  <div><div class="eyebrow">第七展區・經驗借鏡</div><h2>臺灣可以向日本里山學什麼？</h2>
+  <p class="lead">每張卡片打開後分三欄：日本怎麼做、臺灣現在做到哪裡、可以再前進的方向。</p></div>
+  <div style="display:grid;gap:10px" id="lessonList"></div>
+</section>
+
+<!-- 8 臺南 -->
+<section class="view" data-view="tainan" hidden>
+  <div class="tnhead">
+    <div><div class="eyebrow">第八展區・家鄉淺山</div><h2>臺南淺山全面看</h2>
+    <p class="lead">從北邊的白河、東山到南邊的龍崎、關廟，臺南東半部的丘陵是西拉雅族的故鄉、龍眼與芒果的產地，也是全臺草鴞最重要的棲地之一。</p></div>
+    <div class="panel" style="display:grid;gap:8px">
+      <div class="row" style="justify-content:space-between"><span class="note">臺南最高峰・大凍山</span><span class="big">1241 m</span></div>
+      <div class="row" style="justify-content:space-between"><span class="note">草鴞生態給付推動區</span><span class="big">9 區</span></div>
+      <div class="row" style="justify-content:space-between"><span class="note">2025 年參與生態給付農地</span><span class="big">27.21 ha</span></div>
+    </div>
+  </div>
+  <div class="subtabs" id="tnTabs"></div>
+  <div class="panel" id="tnBody"></div>
+  <p class="src">生態給付數據：臺南市政府農業局 2026 年 4 月說明（聯合新聞網報導）；石虎紀錄：林業及自然保育署嘉義分署發布（台灣英文新聞報導）。</p>
+</section>
+
+<!-- 9 模擬 -->
+<section class="view" data-view="sim" hidden>
+  <div><div class="eyebrow">第九展區・互動模擬</div><h2>當一天淺山村長</h2>
+  <p class="lead">這是一個臺南淺山小村的 9 塊土地。替每塊地決定用途、選擇要不要推動政策，觀察生物多樣性、農民收入與石虎、草鴞出現機會怎麼變化。數值是教學用的簡化模型。</p></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>土地配置</h3>
+      <div class="simgrid" id="simGrid"></div>
+      <div style="display:grid;gap:8px;margin-top:14px">
+        <label class="toggle"><input type="checkbox" id="pPes"> <span><b>生態服務給付</b>：不用除草劑、鼠藥的友善農地，每公頃每年最高可領約 2 萬元</span></label>
+        <label class="toggle"><input type="checkbox" id="pPass"> <span><b>動物通道與減速設施</b>：降低路殺</span></label>
+        <label class="toggle"><input type="checkbox" id="pDog"> <span><b>遊蕩犬貓管理</b>：絕育、不放養、不餵食</span></label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="simReset">回到起始狀態</button>
+        <button class="btn" id="simBest">示範：里山型配置</button>
+      </div>
+    </div>
+    <div class="panel" style="display:grid;gap:10px;align-content:start">
+      <h3>村莊健康檢查</h3>
+      <div id="meters" style="display:grid;gap:8px"></div>
+      <div id="simMsg" style="display:grid;gap:6px" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 學習與協作平台 -->
+<section class="view" data-view="learn" hidden>
+  <div><div class="eyebrow">第十展區・學習任務</div><h2>闖關測驗與省思</h2></div>
+  <div class="panel"><div class="row" style="justify-content:space-between"><h3>淺山小學堂（8 題）</h3><span class="chip" id="qScore">得分 0 / 8</span></div><div id="quiz" style="display:grid;gap:18px;margin-top:10px"></div></div>
+  <div class="panel">
+    <h3>省思寫作</h3>
+    <p>如果你是臺南淺山果園的第二代，你會選擇哪些耕作方式，讓家裡有收入，又讓草鴞留下來？請至少寫出兩個做法與理由。</p>
+    <textarea id="reflect" aria-label="省思寫作" style="margin-top:8px" placeholder="寫在這裡，完成後按「複製」，貼到老師的 Google 表單。"></textarea>
+    <div class="row" style="margin-top:8px"><button class="btn" id="copyRef">複製我的文字</button><span class="note" id="copyMsg"></span></div>
+  </div>
+  <div class="panel">
+    <h3>教師專區：放進 Google 協作平台</h3>
+    <ol class="steps">
+      <li>下載本網站的 HTML 檔，用文字編輯器打開，全選複製。</li>
+      <li>在 Google 協作平台右側選 <span class="kbd">插入 → 嵌入 → 嵌入程式碼</span>，貼上程式碼，按「下一步」再「插入」。</li>
+      <li>把嵌入框拉到整頁寬，高度拉到至少 900 像素；手機版預覽確認可上下捲動。</li>
+      <li>在同一頁下方插入 Google 表單（學習單），讓學生貼上省思文字與模擬截圖。</li>
+      <li>也可以用「插入 → 按鈕」放上本網站的公開連結，讓學生在新分頁全螢幕操作。</li>
+    </ol>
+    <h4 style="margin-top:14px">建議協作平台頁面架構</h4>
+    <ul class="clean">
+      <li>首頁：課程目標、評量方式、淺山影片（YouTube 嵌入）</li>
+      <li>探究任務一～三：嵌入本故事館＋各組學習單</li>
+      <li>臺南踏查：校外教學路線、田野紀錄（Google 地圖我的地圖）</li>
+      <li>成果展：各組簡報、海報、行動方案</li>
+    </ul>
+    <h4 style="margin-top:14px">6 節課建議流程</h4>
+    <div class="scrollx"><table id="planTable"></table></div>
+    <p class="note" style="margin-top:8px">對應 108 課綱環境教育議題：環 J1 了解生物多樣性及環境承載力的重要性、環 J2 了解人與周遭動物的互動關係、環 J4 了解永續發展的意義；資訊科技可結合資料蒐集、數位內容製作與線上協作。</p>
+  </div>
+</section>
+</main>
+<footer class="site-foot">
+  <div class="wrap">Copyright © 2026 許淑茹 老師. All Rights Reserved.</div>
+</footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+
+/* ---------- 導覽 ---------- */
+const VIEWS=[['map','1','淺山地圖'],['foodweb','2','生態鏈'],['species','3','物種保育'],['features','4','兩地特色'],['satoyama','5','日本里山'],['compare','6','差異比較'],['lessons','7','借鏡日本'],['tainan','8','臺南淺山'],['sim','9','互動模擬'],['learn','10','學習任務']];
+const tabs=$('#tabs');
+let current='map';
+function show(id){if(id&&VIEWS.some(v=>v[0]===id))current=id;const h=current;
+  $$('section.view').forEach(s=>{const on=s.dataset.view===h;s.hidden=!on;s.style.display=on?'grid':'none'});
+  $$('#tabs .tab').forEach(b=>{if(b.dataset.id===h){b.setAttribute('aria-current','page');b.setAttribute('aria-pressed','true')}else{b.removeAttribute('aria-current');b.setAttribute('aria-pressed','false')}});
+}
+function go(id){show(id);try{window.scrollTo(0,0)}catch(_){}}
+VIEWS.forEach(([id,n,t])=>{const b=document.createElement('button');b.type='button';b.className='tab';b.dataset.id=id;b.innerHTML='<b>'+n+'</b><span class="t">'+t+'</span>';b.title=t;b.setAttribute('aria-label',n+' '+t);
+  b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();go(id)});tabs.appendChild(b)});
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(!g)return;e.preventDefault();go(g.dataset.go)});
+
+/* ---------- 1. 地圖 ---------- */
+const P=(lat,lon)=>[((lon-119.95)*0.917*180+10).toFixed(1),((25.4-lat)*180+10).toFixed(1)];
+const pts=a=>a.map(([la,lo])=>P(la,lo).join(',')).join(' ');
+const island=[[25.30,121.54],[25.15,121.75],[25.01,122.00],[24.86,121.83],[24.60,121.86],[24.20,121.65],[23.98,121.62],[23.60,121.52],[23.10,121.38],[22.75,121.15],[22.35,120.90],[21.90,120.85],[21.93,120.72],[22.37,120.59],[22.46,120.45],[22.62,120.27],[22.90,120.17],[23.00,120.15],[23.13,120.07],[23.27,120.10],[23.37,120.13],[23.45,120.14],[23.78,120.18],[23.95,120.30],[24.07,120.40],[24.28,120.50],[24.40,120.58],[24.50,120.66],[24.62,120.78],[24.80,120.92],[24.92,121.00],[25.05,121.10],[25.12,121.30],[25.18,121.41]];
+const shallow=[[25.25,121.50],[25.10,121.80],[24.85,121.85],[24.55,121.80],[24.10,121.64],[23.60,121.50],[23.10,121.36],[22.75,121.13],[22.35,120.89],[21.95,120.84],[22.10,120.68],[22.45,120.60],[22.80,120.48],[23.10,120.40],[23.40,120.47],[23.70,120.60],[24.00,120.70],[24.30,120.76],[24.55,120.85],[24.80,121.03],[25.00,121.25]];
+const high=[[24.85,121.35],[24.70,121.65],[24.30,121.52],[23.90,121.42],[23.50,121.25],[23.10,121.08],[22.70,120.93],[22.35,120.80],[22.60,120.72],[23.00,120.74],[23.30,120.76],[23.60,120.86],[24.00,120.95],[24.35,121.05],[24.60,121.15]];
+const coastal=[[23.98,121.56],[23.60,121.47],[23.20,121.33],[23.10,121.30],[23.35,121.36],[23.75,121.47]];
+const map=$('#twmap');
+el('rect',{x:0,y:0,width:370,height:660,fill:'var(--sea)'},map);
+const defs=el('defs',{},map);const cp=el('clipPath',{id:'isl'},defs);el('polygon',{points:pts(island)},cp);
+el('polygon',{points:pts(island),fill:'var(--plain)',stroke:'var(--mud)','stroke-width':1.2},map);
+const gS=el('g',{'clip-path':'url(#isl)'},map);
+el('polygon',{points:pts(shallow),fill:'var(--shallow)','stroke-linejoin':'round'},gS);
+const gH=el('g',{'clip-path':'url(#isl)'},map);
+el('polygon',{points:pts(high),fill:'var(--high)'},gH);
+el('polygon',{points:pts(coastal),fill:'var(--shallow)'},gS);
+const lab=(t,la,lo,sz,op)=>{const [x,y]=P(la,lo);const tx=el('text',{x,y,'font-size':sz||10,opacity:op||.75,'text-anchor':'middle'},map);tx.textContent=t};
+lab('中央山脈',23.75,121.05,11,.9);lab('臺灣海峽',23.3,119.98,11,.6);lab('太平洋',22.8,121.75,11,.6);lab('海岸山脈',23.55,121.62,9,.7);
+const HOT=[
+ {n:'新北 貢寮・雙溪',la:25.00,lo:121.86,alt:'50–600 m',d:'水梯田、溪流與次生林交錯的東北角淺山。2011 年起田寮洋水梯田復育，農民不用農藥、全年湛水即可領生態勞務酬金。',sp:'食蛇龜、黃緣螢、臺灣藍鵲'},
+ {n:'宜蘭 礁溪・員山',la:24.78,lo:121.70,alt:'50–800 m',d:'雪山山脈東側山腳，湧泉水田、果園與溫泉聚落相接。',sp:'大冠鷲、領角鴞、臺灣藍鵲'},
+ {n:'苗栗 通霄・三義・銅鑼',la:24.42,lo:120.80,alt:'100–800 m',d:'石虎最重要的穩定族群所在。相思樹林、竹林、果園與茶園鑲嵌，也是路殺熱點最多的地區之一。',sp:'石虎、穿山甲、麝香貓'},
+ {n:'臺中 東勢・新社・大坑',la:24.22,lo:120.86,alt:'200–1000 m',d:'高接梨、甜柿、休閒農場與淺山林地交錯，推動石虎友善農作與里山倡議。',sp:'石虎、臺灣藍鵲、領角鴞'},
+ {n:'南投 集集・中寮・國姓',la:23.85,lo:120.80,alt:'200–1000 m',d:'特有生物研究保育中心所在地，石虎救傷、監測與環境教育的重鎮。',sp:'石虎、八色鳥、白鼻心'},
+ {n:'雲林 林內・古坑',la:23.70,lo:120.62,alt:'100–800 m',d:'林內湖本村是八色鳥重要繁殖地，社區結合友善農作與生態旅遊。',sp:'八色鳥、穿山甲、大冠鷲'},
+ {n:'嘉義 竹崎・中埔・番路',la:23.45,lo:120.56,alt:'100–900 m',d:'阿里山山腳的果園、竹林與茶園，八掌溪上游流域。',sp:'穿山甲、麝香貓、鳳頭蒼鷹'},
+ {n:'臺南 白河・東山・楠西',la:23.28,lo:120.47,alt:'100–1241 m',d:'臺南最高峰大凍山所在。東山咖啡、龍眼焙灶、楠西梅子；2006 年曾在白河鹿寮水庫記錄到石虎。',sp:'穿山甲、大冠鷲、領角鴞',tn:1},
+ {n:'臺南 左鎮・龍崎・關廟',la:22.98,lo:120.38,alt:'50–500 m',d:'泥岩惡地（草山月世界）、刺竹林與鳳梨田，草鴞棲息與覓食的重要地帶。',sp:'草鴞、穿山甲、臺灣野兔',tn:1},
+ {n:'高雄 燕巢・田寮・大樹',la:22.80,lo:120.42,alt:'50–400 m',d:'田寮月世界泥岩惡地與芭樂、鳳梨田，草鴞生態給付推動區。',sp:'草鴞、環頸雉、大冠鷲'},
+ {n:'屏東 里港・高樹・新埤',la:22.62,lo:120.60,alt:'50–500 m',d:'大武山山腳沖積扇與淺山。2025 年林保署擴大草鴞生態給付到新埤、枋寮。',sp:'草鴞、穿山甲、黃鸝'},
+ {n:'花蓮 大農大富・光復',la:23.62,lo:121.41,alt:'50–600 m',d:'花東縱谷平原與兩側淺山。國土綠網以大農大富平地森林園區為基地，打造連接中央山脈和海岸山脈的生態廊道。',sp:'穿山甲、麝香貓、環頸雉'}
+];
+const gHot=el('g',{},map);let selHot=null;
+function hotInfo(h){$('#hotInfo').innerHTML=h?`<div class="eyebrow">${h.tn?'家鄉淺山':'淺山熱點'}</div><h3>${h.n}</h3><p class="row" style="margin:6px 0"><span class="chip">海拔 ${h.alt}</span></p><p>${h.d}</p><p style="margin-top:8px"><b>代表物種：</b>${h.sp}</p>${h.tn?'<p style="margin-top:8px"><button type="button" class="btn" data-go="tainan">→ 前往第八展區：臺南淺山全面看</button></p>':''}`:
+ `<h3>點一個橘點開始</h3><p>淺山帶（淺綠色）像一條緞帶，繞在中央山脈（深綠色）的外圍，西部最寬。</p><ul class="clean" style="margin-top:8px"><li>中高海拔多為國有林與保護區，保護得較好。</li><li>淺山多為私有地，開發壓力最大。</li><li>臺灣陸域約 19% 劃為各類自然保護區，大多在中央山脈。</li></ul>`}
+HOT.forEach((h,i)=>{const [x,y]=P(h.la,h.lo);const g=el('g',{class:'hot',tabindex:0,role:'button','aria-label':h.n},gHot);el('circle',{cx:x,cy:y,r:h.tn?8:6.5},g);
+ const pick=()=>{if(selHot)selHot.classList.remove('sel');g.classList.add('sel');selHot=g;hotInfo(h)};g.addEventListener('click',pick);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick()}})});
+hotInfo(null);
+$('#layerBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.classList.toggle('on');const on=b.classList.contains('on');if(b.dataset.layer==='shallow')gS.style.opacity=on?1:.15;else gH.style.opacity=on?1:0;});
+
+/* 剖面 */
+const PROF=[[0,0,'東石'],[12,10],[25,40,'嘉義市'],[32,150],[36,320,'竹崎'],[42,700],[48,1200,'奮起湖'],[56,2000],[62,2300,'阿里山'],[70,3200],[75,3952,'玉山'],[82,3000],[90,2400],[100,1500],[108,700],[114,250,'花東縱谷'],[120,180],[126,900,'海岸山脈'],[131,500],[135,0,'東海岸']];
+const pf=$('#profile');const X=k=>30+k*4.4, Y=m=>200-m/3952*170;
+[0,1000,2000,3000,3952].forEach(m=>{el('line',{x1:30,x2:624,y1:Y(m),y2:Y(m),stroke:'var(--line)','stroke-dasharray':'3 4'},pf);const t=el('text',{x:2,y:Y(m)+4},pf);t.textContent=m+'m'});
+el('rect',{x:30,y:Y(1000),width:594,height:Y(100)-Y(1000),fill:'var(--shallow)',opacity:.28},pf);
+const tz=el('text',{x:620,y:Y(550),'text-anchor':'end'},pf);tz.textContent='淺山帶 100–1000 m';
+let d='M'+X(0)+','+Y(0);PROF.forEach(p=>d+=' L'+X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1));d+=' L'+X(135)+',200 L'+X(0)+',200 Z';
+el('path',{d,fill:'var(--high)',opacity:.85,stroke:'var(--forest)','stroke-width':1.5},pf);
+PROF.filter(p=>p[2]).forEach(p=>{const t=el('text',{x:X(p[0]),y:Math.max(Y(p[1])-6,14),'text-anchor':'middle','font-size':10.5},pf);t.style.fill='var(--ink)';t.textContent=p[2]});
+const mk=el('line',{y1:10,y2:200,stroke:'var(--ochre)','stroke-width':2},pf);const dot=el('circle',{r:5,fill:'var(--ochre)'},pf);
+function elevAt(k){for(let i=1;i<PROF.length;i++){if(k<=PROF[i][0]){const a=PROF[i-1],b=PROF[i];return a[1]+(b[1]-a[1])*(k-a[0])/(b[0]-a[0])}}return 0}
+function zone(m){if(m<100)return['平原','人口與農業最集中，水田、魚塭、都市。代表物種：水雉、黑面琵鷺（濕地）、斑文鳥。'];
+ if(m<=1000)return['淺山','丘陵與低山，次生林、竹林、果園、聚落交錯，是石虎、穿山甲、草鴞、食蛇龜的家，也是人與野生動物衝突最多的地帶。'];
+ if(m<=2500)return['中海拔','闊葉林、針闊葉混合林，多屬國有林。代表物種：臺灣黑熊、山羌、黃喉貂。'];
+ return['高海拔','針葉林、高山草原與岩原，多在國家公園內。代表物種：臺灣水鹿、岩鷚、高山白腹鼠。']}
+function upd(){const k=+$('#pf').value;const m=Math.round(elevAt(k));mk.setAttribute('x1',X(k));mk.setAttribute('x2',X(k));dot.setAttribute('cx',X(k));dot.setAttribute('cy',Y(m));
+ const z=zone(m);$('#pfRead').textContent=`距西海岸 ${k} 公里・海拔約 ${m} 公尺`;const c=$('#pfZone');c.textContent=z[0];c.className='chip '+(z[0]==='淺山'?'lv3':'');$('#pfText').textContent=z[1]}
+$('#pf').addEventListener('input',upd);upd();
+
+/* ---------- 2. 食物網 ---------- */
+const N={
+ plant:['樹木與落果',0,70],grass:['草本・白茅',0,215],crop:['農作物・果園',0,360],
+ termite:['螞蟻・白蟻',1,40],insect:['昆蟲・蝸牛',1,140],rodent:['鼠類',1,250],hare:['臺灣野兔',1,350],squirrel:['赤腹松鼠',1,450],seedbird:['斑鳩・麻雀',1,560],
+ pangolin:['穿山甲',2,40],turtle:['食蛇龜',2,125],frog:['蛙類',2,205],lizard:['蜥蜴',2,285],insectbird:['白頭翁等小鳥',2,375],civet:['白鼻心',2,470],snake:['蛇類',2,565],
+ leopard:['石虎',3,140],owl:['草鴞',3,270],goshawk:['鳳頭蒼鷹',3,400],serpent:['大冠鷲',3,530]
+};
+const INFO={plant:'生產者：相思樹、構樹、血桐等次生林樹木，落下的果實是許多動物的食物。',grass:'生產者：白茅、芒草等草生地，是草鴞築巢與獵鼠的地方。',crop:'生產者：果園、竹林、旱田。人類照顧的作物也成為野生動物的食物來源。',termite:'初級消費者：分解枯木，也是穿山甲的主食。',insect:'初級消費者：數量龐大，支撐蛙類、蜥蜴、小鳥。',rodent:'初級消費者：繁殖快，是石虎、草鴞、蛇的主要獵物，也是農民最想消滅的對象。',hare:'初級消費者：在草生地與農田邊緣活動。',squirrel:'初級消費者：會啃樹皮與果實，有時造成農損。',seedbird:'初級消費者：吃草籽與穀粒。',pangolin:'次級消費者：每年可吃下大量螞蟻與白蟻，是天然的白蟻防治員。',turtle:'雜食：吃落果、蝸牛、昆蟲，在森林底層幫忙散播種子。',frog:'次級消費者：吃昆蟲，又被蛇、石虎吃。',lizard:'次級消費者：吃昆蟲。',insectbird:'次級消費者：吃昆蟲與果實。',civet:'雜食：吃果實、昆蟲、小型動物。',snake:'三級消費者：吃鼠、蛙、蜥蜴，又是大冠鷲的獵物。',leopard:'頂層掠食者：主食鼠類，也吃野兔、鳥、蛙。牠出現代表淺山食物網完整。',owl:'頂層掠食者：唯一在草地地面築巢的貓頭鷹，幾乎只吃鼠類。',goshawk:'頂層掠食者：在林緣捕捉鳥、松鼠、蜥蜴。',serpent:'頂層掠食者：最愛吃蛇，也吃蜥蜴、蛙。'};
+const E=[['plant','termite'],['plant','insect'],['plant','squirrel'],['plant','seedbird'],['plant','civet'],['plant','turtle'],['grass','insect'],['grass','hare'],['grass','rodent'],['grass','seedbird'],['crop','rodent'],['crop','insect'],['crop','squirrel'],['crop','hare'],
+ ['termite','pangolin'],['insect','frog'],['insect','lizard'],['insect','insectbird'],['insect','turtle'],['insect','civet'],
+ ['rodent','snake'],['rodent','leopard'],['rodent','owl'],['rodent','civet'],['hare','leopard'],['squirrel','goshawk'],['squirrel','leopard'],['seedbird','leopard'],['seedbird','goshawk'],
+ ['frog','snake'],['frog','leopard'],['frog','serpent'],['lizard','snake'],['lizard','serpent'],['lizard','goshawk'],['snake','serpent'],['insectbird','goshawk'],['insectbird','leopard']];
+const web=$('#web');const LY=[400,290,180,62];const W=86,H=30;
+const wd=el('defs',{},web);const mkr=el('marker',{id:'arw',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:6,markerHeight:6,orient:'auto-start-reverse'},wd);el('path',{d:'M0,0 L10,5 L0,10 z',fill:'var(--muted)'},mkr);
+['生產者','初級消費者','次級消費者','頂層掠食者'].forEach((t,i)=>{const tx=el('text',{x:4,y:LY[i]-H/2-6,class:'lvl'},web);tx.textContent=t});
+const eG=el('g',{},web),nG=el('g',{},web);const edgeEls=[];
+E.forEach(([a,b])=>{const A=N[a],B=N[b];const x1=A[2],y1=LY[A[1]]-H/2,x2=B[2],y2=LY[B[1]]+H/2;const p=el('path',{class:'e',d:`M${x1},${y1} C${x1},${(y1+y2)/2} ${x2},${(y1+y2)/2} ${x2},${y2}`},eG);edgeEls.push({a,b,p})});
+const nodeEls={};
+Object.entries(N).forEach(([k,v])=>{const g=el('g',{class:'n',tabindex:0,role:'button','aria-label':v[0]},nG);el('rect',{x:v[2]-W/2,y:LY[v[1]]-H/2,width:W,height:H},g);const t=el('text',{x:v[2],y:LY[v[1]]+4.5},g);t.textContent=v[0];nodeEls[k]=g;
+ const go=()=>focusNode(k);g.addEventListener('click',go);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}})});
+{const g=el('g',{},nG);el('rect',{x:530,y:418,width:104,height:26,rx:6,fill:'var(--sunk)',stroke:'var(--mud)','stroke-dasharray':'4 3'},g);const t=el('text',{x:582,y:435,'text-anchor':'middle','font-size':11.5},g);t.style.fill='var(--muted)';t.textContent='分解者・回到土壤'}
+function clearWeb(){Object.values(nodeEls).forEach(g=>g.setAttribute('class','n'));edgeEls.forEach(e=>e.p.setAttribute('class','e'));$('#toxBtn').classList.remove('on')}
+function focusNode(k){clearWeb();const prey=[],pred=[];edgeEls.forEach(e=>{if(e.b===k){e.p.setAttribute('class','e prey');prey.push(e.a)}else if(e.a===k){e.p.setAttribute('class','e hl');pred.push(e.b)}else e.p.setAttribute('class','e dim')});
+ Object.entries(nodeEls).forEach(([id,g])=>g.setAttribute('class','n '+(id===k?'focus':(prey.includes(id)||pred.includes(id))?'rel':'dim')));
+ const nm=x=>N[x][0];$('#webInfo').innerHTML=`<b>${nm(k)}</b>：${INFO[k]}<br><span style="color:var(--ochre)">吃：</span>${prey.length?prey.map(nm).join('、'):'（自行製造養分）'}　<span style="color:var(--forest)">被誰吃：</span>${pred.length?pred.map(nm).join('、'):'（成體幾乎沒有天敵，但會被路殺、遊蕩犬攻擊）'}`}
+$('#webReset').addEventListener('click',()=>{clearWeb();$('#webInfo').textContent='請點選一個物種。'});
+$('#toxBtn').addEventListener('click',()=>{clearWeb();$('#toxBtn').classList.add('on');const T=new Set(['crop','rodent','snake','leopard','owl','civet','serpent']);
+ edgeEls.forEach(e=>e.p.setAttribute('class',(T.has(e.a)&&T.has(e.b)&&e.a!=='civet')?'e tox':'e dim'));Object.entries(nodeEls).forEach(([id,g])=>g.setAttribute('class','n '+(T.has(id)?'tox':'dim')));
+ $('#webInfo').innerHTML='<b style="color:var(--danger)">二次毒害擴散路線</b>：農田裡的抗凝血滅鼠藥讓老鼠慢慢死去，行動變慢的老鼠最容易被抓。石虎、草鴞、蛇吃下中毒的老鼠後內出血死亡，大冠鷲吃蛇又再中毒一次。越上層，累積越多。改用捕鼠籠、架設猛禽棲架，請貓頭鷹當「生物防治員」，是更友善的做法。'});
+
+const PUZ=[['草鴞 × 草地',['草本・白茅','鼠類','草鴞']],['大冠鷲 × 農田',['農作物','昆蟲','蛙類','蛇類','大冠鷲']],['穿山甲 × 森林',['枯木','白蟻','穿山甲']],['石虎 × 果園',['果樹落果','昆蟲','蜥蜴','石虎']]];
+let puz=0,picked=[];
+function shuffle(a){return a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1])}
+function drawPuz(){const pb=$('#puzBtns');pb.innerHTML='';PUZ.forEach((p,i)=>{const b=document.createElement('button');b.className='btn'+(i===puz?' on':'');b.textContent=p[0];b.onclick=()=>{puz=i;drawPuz()};pb.appendChild(b)});
+ picked=[];$('#puzChain').innerHTML='';$('#puzFb').textContent='';const pc=$('#puzCards');pc.innerHTML='';
+ shuffle(PUZ[puz][1]).forEach(name=>{const b=document.createElement('button');b.textContent=name;b.onclick=()=>{picked.push(name);b.disabled=true;const s=document.createElement('span');s.textContent=name;const ch=$('#puzChain');if(ch.children.length){const ar=document.createElement('b');ar.textContent='→';ar.style.color='var(--muted)';ch.appendChild(ar)}ch.appendChild(s);
+  if(picked.length===PUZ[puz][1].length){const ok=picked.join()===PUZ[puz][1].join();$('#puzFb').innerHTML=ok?'<b style="color:var(--forest)">正確！</b> 能量從生產者一路往上傳。想一想：如果中間有一環因為農藥消失，最上層會怎樣？':'<b style="color:var(--danger)">順序不對</b>，正確是：'+PUZ[puz][1].join(' → ')+'。<button class="btn" id="again" style="margin-left:6px">再試一次</button>';const ag=$('#again');if(ag)ag.onclick=drawPuz}};pc.appendChild(b)})}
+drawPuz();
+
+/* ---------- 3. 物種 ---------- */
+const SP=[
+ {n:'石虎',l:'Prionailurus bengalensis chinensis',lv:1,tn:1,food:'淺山森林與農地交界、草生地，夜間捕食鼠類、野兔、鳥、蛙。',thr:'棲地開發與破碎化、路殺、滅鼠藥二次毒害、遊蕩犬攻擊、偷吃家禽被捕捉。野外估計不足 500 隻，穩定族群只在苗栗、臺中、南投。',now:'瀕危物種保育行動計畫；苗栗、臺中、南投推動「友善石虎生態服務給付」（不用除草劑與毒鼠藥、雞舍入侵通報補償、巡守隊）；道路動物通道與減速路段。臺南曾文溪下游近年再度拍到。'},
+ {n:'草鴞',l:'Tyto longimembris',lv:1,tn:1,food:'白茅草生地、廢耕地、牧草地與河川地，在地面築巢，夜間在農田上空獵捕鼠類。',thr:'草生地被開發、整地或演替成樹林；滅鼠藥毒害；鳥網、獸夾誤捕。全臺估計約 300～500 隻。',now:'草鴞保育行動計畫；嘉義、臺南、高雄、屏東推動生態服務給付，友善農地每公頃每年最高約 2 萬元，加上猛禽棲架監測獎勵。'},
+ {n:'食蛇龜',l:'Cuora flavomarginata',lv:1,tn:0,food:'低海拔森林底層、溪流附近，吃落果、蝸牛、蚯蚓與昆蟲。',thr:'非法捕捉走私當寵物、棲地開發、路殺。IUCN 列為極危。',now:'2019 年由第二級升為第一級；查緝走私、救傷野放與族群監測。'},
+ {n:'臺灣穿山甲',l:'Manis pentadactyla pentadactyla',lv:2,tn:1,food:'淺山森林與草地，用長舌吃螞蟻、白蟻，挖洞居住。',thr:'遊蕩犬攻擊（動物園救傷個體中很常見）、獸鋏斷肢、路殺、棲地破碎。',now:'雖為第二級，但列入瀕危物種保育行動計畫；臺北市立動物園救傷與人工照養研究世界領先。'},
+ {n:'麝香貓',l:'Viverricula indica taivana',lv:2,tn:0,food:'低海拔次生林、草叢與農地，雜食，吃小動物、昆蟲與果實。',thr:'棲地消失、路殺、捕獸鋏與遊蕩犬。',now:'自動相機監測；國土綠網保育軸帶關注物種。'},
+ {n:'八色鳥',l:'Pitta nympha',lv:2,tn:0,food:'夏候鳥，在低海拔闊葉林底層、溪谷翻找蚯蚓與昆蟲。',thr:'低海拔天然林被砍伐改種竹子、果樹或開發，繁殖地縮小。',now:'雲林林內湖本村社區保育，結合友善農作與生態旅遊。'},
+ {n:'黃鸝',l:'Oriolus chinensis',lv:2,tn:0,food:'低海拔闊葉林、平地樹林的樹冠層，吃昆蟲與漿果。',thr:'低海拔天然林減少；族群主要在南部。',now:'2019 年由第一級調整為第二級，持續族群監測。'},
+ {n:'大冠鷲',l:'Spilornis cheela hoya',lv:2,tn:1,food:'淺山森林上空盤旋，捕食蛇、蜥蜴、蛙。',thr:'吃下中毒的蛇與鼠造成二次毒害、路殺、電線撞擊。',now:'猛禽救傷；推廣停用滅鼠藥。淺山最常見的猛禽，常在早上乘熱氣流鳴叫盤旋。'},
+ {n:'鳳頭蒼鷹',l:'Accipiter trivirgatus formosae',lv:2,tn:1,food:'淺山到都市公園的林緣，捕食鳥類、松鼠、蜥蜴。',thr:'二次毒害、窗戶撞擊、巢樹被砍。',now:'適應力強，已進入都市公園繁殖，是公民科學觀察的好對象。'},
+ {n:'領角鴞',l:'Otus lettia glabripes',lv:2,tn:1,food:'低海拔樹林、果園、校園，夜間捕食昆蟲、鼠、蛙。',thr:'滅鼠藥毒害、巢洞樹被砍、路殺。',now:'許多校園與社區架設巢箱；「咕—咕—」的叫聲是淺山夜晚的代表聲音。'},
+ {n:'環頸雉',l:'Phasianus colchicus formosanus',lv:2,tn:0,food:'西部與東部平原、淺山的草生地、旱田、甘蔗田，吃種子與昆蟲。',thr:'草生地開發、農藥、遊蕩犬貓、與外來亞種雜交。',now:'臺灣特有亞種的保種與棲地營造。'},
+ {n:'臺灣藍鵲',l:'Urocissa caerulea',lv:3,tn:0,food:'低海拔闊葉林、果園，雜食。',thr:'棲地減少；整體族群穩定。',now:'臺灣特有種，常見於淺山聚落周邊。'},
+ {n:'白鼻心',l:'Paguma larvata taivana',lv:0,tn:1,food:'淺山森林與果園，夜間吃果實與小動物。',thr:'偷吃果實引發農損衝突、路殺。',now:'2019 年移為一般類，族群穩定；仍不可任意獵捕，需以友善方式防治農損。'},
+ {n:'臺灣野兔',l:'Lepus sinensis formosus',lv:0,tn:1,food:'草生地、農田邊緣，吃嫩草與作物。',thr:'草生地減少、路殺、遊蕩犬。',now:'一般類；是石虎與猛禽的重要食物，族群多寡反映草生地品質。'}
+];
+const LV=['一般類','第一級・瀕臨絕種','第二級・珍貴稀有','第三級・其他應予保育'];
+function drawSp(f){const L=$('#spList');L.innerHTML='';SP.filter(s=>f==='all'||(f==='tn'?s.tn:String(s.lv)===f)).forEach(s=>{const c=document.createElement('article');c.className='panel sp';
+ c.innerHTML=`<header><h3>${s.n}</h3><span class="chip ${s.lv?'lv'+s.lv:''}">${LV[s.lv]}</span></header><div class="row"><span class="lat">${s.l}</span>${s.tn?'<span class="tn">臺南可見</span>':''}</div><dl><dt>覓食區與棲地</dt><dd>${s.food}</dd><dt>遇到的問題</dt><dd>${s.thr}</dd><dt>保育現況</dt><dd>${s.now}</dd></dl>`;L.appendChild(c)})}
+$('#spFilter').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#spFilter button').forEach(x=>x.classList.toggle('on',x===b));drawSp(b.dataset.f)});drawSp('all');
+
+/* ---------- 4. 特色 ---------- */
+const li=a=>a.map(x=>'<li>'+x+'</li>').join('');
+$('#twFeat').innerHTML=li(['<b>地形陡、變化快</b>：從海邊到 1000 公尺往往只有十幾公里，造山運動與颱風、地震讓地景不斷改變。','<b>亞熱帶高多樣性</b>：熱帶與溫帶物種交會，特有種、特有亞種多。','<b>經濟作物主導</b>：果園、檳榔、竹林、茶園取代原本的森林，近年還有光電、露營區、廠房進駐。','<b>私有地為主</b>：國有林外的淺山土地多屬私人，無法單靠劃設保護區保育。','<b>保育從「搶救物種」出發</b>：石虎、草鴞、水雉等明星物種帶動社會關注。']);
+$('#jpFeat').innerHTML=li(['<b>數百年文化地景</b>：聚落、水田、溜池（灌溉水塘）、雜木林、茅草地組成固定的組合。','<b>適度利用維持多樣性</b>：每 15～20 年輪伐一次薪炭林，割草、清溝，維持明亮的森林與草地。','<b>社區共管傳統</b>：村落共同管理的「入會地」，有集體維護的規約與分工。','<b>政策與法律完整</b>：從國家戰略、農業直接給付到 2025 年的地域生物多樣性增進法。','<b>國際品牌化</b>：2010 年名古屋 COP10 提出 SATOYAMA 倡議，推向全世界。']);
+$('#twTl').innerHTML=[['2009','臺南官田水雉誤食農藥事件，催生「綠色保育標章」。'],['2010','參與名古屋 COP10 里山倡議的國際討論。'],['2011','新北貢寮田寮洋水梯田復育，給付農民生態勞務酬金。'],['2014','林務局與東華大學推動「臺灣里山倡議夥伴關係網絡（TPSI）」。'],['2018','啟動跨部會「國土生態保育綠色網絡建置計畫」。'],['2019','南投、苗栗試辦友善石虎生態服務給付。'],['2020','「瀕危物種及重要棲地生態服務給付推動方案」核定，擴及草鴞等物種。'],['2023','公開國土綠網 45 條區域保育軸帶、44 個綠網關注區圖資。']].map(([y,t])=>`<div><b>${y}</b>${t}</div>`).join('');
+
+/* ---------- 5. 日本里山 ---------- */
+const JP={
+ feat:`<div class="grid2"><div><h3>里山的五個組成</h3><ul class="clean"><li><b>雜木林</b>：麻櫟、枹櫟等落葉闊葉樹，砍伐後會萌芽再生，用來燒炭、種香菇。</li><li><b>谷戶田（谷津田）</b>：丘陵間谷地開墾的梯田。</li><li><b>溜池</b>：灌溉用水塘，是蜻蜓、青蛙、水生植物的家。</li><li><b>茅場（草地）</b>：割茅草蓋屋頂、做堆肥。</li><li><b>聚落與社寺林</b>：神社周圍保留的老樹林。</li></ul></div><div><h3>為什麼「人」是關鍵？</h3><p>日本里山的多樣性靠持續的人為管理：林子定期砍伐變得明亮，春季野花才會開；水田每年灌水，青蛙、泥鰍才能繁殖。2002 年日本生物多樣性國家戰略把「里山缺乏人管理」列為生物多樣性的第二大危機，和「過度開發」同等重要。</p><p style="margin-top:8px">相關概念：「里地里山」包含農地，「里海」則是延伸到沿岸海域的版本。</p></div></div>`,
+ dev:`<div class="tl">${[['江戶時代','村落以「入會地」共同管理山林，薪炭、落葉堆肥、茅草循環利用。'],['1950–60 年代','燃料革命（石油、瓦斯）與化學肥料普及，雜木林失去用途；年輕人移往都市。'],['1960 年代起','林學界開始使用「里山」一詞指稱農用林。'],['1990 年代','市民團體投入雜木林、谷戶田保全運動，志工下鄉割草伐木。'],['2002','國家戰略點出「人為利用減少」的第二危機。'],['2010','名古屋 CBD-COP10，日本與聯合國大學提出「里山倡議」，成立國際夥伴關係網絡 IPSI。'],['2011','能登「里山里海」與佐渡「朱鷺與共生的里山」登錄 FAO 世界農業遺產。'],['2014','「多面的機能支払」法制化，給付社區共同維護農地、水路、生態。'],['2023','環境省開始認證「自然共生サイト」（民間保育地，對應 30by30 目標）。'],['2025.04','「地域生物多樣性增進法」施行，連荒廢地的復原與創出也能被認證。'],['2026.03','自然共生サイト累計達 569 處，約一半由企業申請。']].map(([y,t])=>`<div><b>${y}</b>${t}</div>`).join('')}</div>`,
+ adv:`<ul class="clean"><li><b>文化認同強</b>：里山是日本人心中的「原風景」，動畫、教科書、節慶都在傳遞，社會支持度高。</li><li><b>社區組織成熟</b>：自治會、保全會、NPO 長期分工，有共同規約。</li><li><b>穩定的直接給付</b>：中山間地域直接支付、多面的機能支付讓維護工作有經費。</li><li><b>法律與認證制度</b>：自然共生サイト把民間、企業守護的土地正式算進國家保育面積。</li><li><b>企業參與誘因</b>：TNFD 自然相關財務揭露潮流，企業願意投入社有林、工廠綠地。</li><li><b>長期監測</b>：全國性的長期生態監測與市民調查累積資料。</li><li><b>國際品牌</b>：世界農業遺產、里山米、觀光帶來附加價值。</li></ul>`,
+ dif:`<ul class="clean"><li><b>高齡化與過疏化</b>：農村人口老化、離村，維護人力嚴重不足。</li><li><b>耕作放棄地增加</b>：沒人耕種的谷戶田長成雜木或竹林，水田生物消失。</li><li><b>獸害加劇</b>：鹿、野豬、猴子數量增加，啃食農作與森林下層植物。</li><li><b>竹林擴張與森林病害</b>：孟宗竹入侵雜木林；松材線蟲、橡樹萎凋病造成大量枯死。</li><li><b>外來種</b>：浣熊、美國螯蝦、牛蛙等在溜池與水田擴散。</li><li><b>開發壓力</b>：大型太陽能電廠、宅地開發侵入里山。</li><li><b>經濟價值不足</b>：薪炭、茅草已無市場，保育常靠補助與志工，難以自給。</li></ul>`
+};
+function jp(k){$('#jpBody').innerHTML=JP[k]+(k==='dev'?'<p class="src" style="margin-top:10px">自然共生サイト數據：日本環境省、國土交通省公開資料。</p>':'')}
+$('#jpTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#jpTabs button').forEach(x=>x.classList.toggle('on',x===b));jp(b.dataset.k)});jp('feat');
+
+/* ---------- 6. 比較表 ---------- */
+const CMP=[['氣候與植被','亞熱帶，常綠闊葉林、竹林；颱風、豪雨頻繁','溫帶，落葉闊葉雜木林、四季分明'],['地形','坡陡、造山活躍，地震與土石流多','坡度較緩的丘陵與谷地'],['形成歷史','清代以來開墾，二十世紀快速轉作經濟作物','數百年農村自給生活形塑'],['土地利用','果園、檳榔、竹林、茶園、零星聚落；近年光電、露營、廠房','雜木林、谷戶田、溜池、茅場、聚落'],['土地權屬','私有地為主、細碎，國有林外缺乏管理機制','私有加上傳統共有地「入會地」'],['代表物種','石虎、草鴞、穿山甲、食蛇龜、八色鳥','日本蟾蜍、源氏螢、蒼鷺、日本鬣羚、朱鷺（佐渡）'],['主要威脅','開發與破碎化、路殺、農藥鼠藥、遊蕩犬貓','人為管理不足（荒廢）、獸害、外來種、人口老化'],['問題本質','「用太多」：開發與利用過度','「用太少」：放棄利用導致荒廢'],['政策工具','國土綠網、生態服務給付、綠色保育標章、TPSI','國家戰略、多面的機能支付、自然共生サイト、地域生物多樣性增進法'],['社會認知','「淺山」一詞較新，大眾認識仍在建立中','里山是國民「原風景」，普遍認同']];
+$('#cmpTable').innerHTML='<thead><tr><th>比較面向</th><th>臺灣淺山</th><th>日本里山</th></tr></thead><tbody>'+CMP.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')+'</tbody>';
+
+/* ---------- 7. 借鏡 ---------- */
+const LES=[
+ ['把民間守護的土地「算進」保育成果','2023 年起認證自然共生サイト，2025 年立法；企業、學校、社區管理的綠地都可申請，納入 30by30 目標。','保護區集中在中央山脈；淺山私有地的友善經營缺少正式認證與法律地位。','建立淺山「其他有效保育地（OECM）」認證，讓友善果園、社區林、校園綠地被看見、可累積。'],
+ ['穩定而長期的直接給付','多面的機能支付以社區為單位，長期給付維護水路、農地與生態的工作。','生態服務給付已推動數年，但以個別農民、年度申請為主，覆蓋面積仍小（臺南 2025 年約 27 公頃）。','改為多年期契約、社區聯合申請，並把巡守、棲架、草生地維護都列入可給付的「生態勞務」。'],
+ ['社區共管的組織與規約','入會地傳統與保全會，讓「大家的山」有人負責、有分工。','淺山聚落人口老化，土地零碎，地主多不住在當地。','培力社區保育協會、成立淺山合作社，結合大學、NGO 與地方創生青年。'],
+ ['企業參與與自然揭露','企業在社有林與工廠綠地做保育，搭配 TNFD 揭露取得市場肯定。','企業多以「認養造林」為主，與在地物種保育連結弱。','引導企業的 ESG 預算投入淺山棲地復育與友善農產採購，並要求成效監測。'],
+ ['品牌化與農產加值','世界農業遺產、朱鷺米、里山米讓保育變成賣點。','綠色保育標章已有基礎，但消費者認知度有限。','打造「草鴞米」「石虎米」之外的淺山果品品牌，例如友善龍眼乾、草生栽培芒果，連結學校午餐與觀光。'],
+ ['環境教育與市民科學','「田んぼの学校」讓孩子下田；全國長期監測由市民參與。','學校環境教育多為單次活動，缺乏長期在地調查。','學校認養一塊淺山樣區，用自動相機、iNaturalist 長期記錄，資料回饋給綠網。'],
+ ['預防性的獸害與衝突管理','面對鹿、野豬增加，建立電圍網、捕獲與共存制度。','石虎偷雞、獼猴吃果，衝突常讓保育被誤解。','推廣防護網補助、入侵通報補償，並把衝突處理納入社區巡守。']
+];
+$('#lessonList').innerHTML=LES.map((l,i)=>`<details class="lesson"${i===0?' open':''}><summary>${l[0]}</summary><div class="three"><div><h4>日本怎麼做</h4>${l[1]}</div><div><h4>臺灣現況</h4>${l[2]}</div><div style="background:var(--forest-soft)"><h4>可以前進的方向</h4>${l[3]}</div></div></details>`).join('');
+
+/* ---------- 8. 臺南 ---------- */
+const TN={
+ '地理範圍':`<div class="grid2"><div><h3>臺南淺山在哪裡</h3><p>臺南東半部由北而南：白河、東山、六甲、柳營東側、大內、楠西、玉井、南化、左鎮、山上、新化、龍崎、關廟，屬阿里山山脈西側的嘉南丘陵與新化丘陵。最高點是白河、東山交界的大凍山，海拔約 1241 公尺。</p></div><div><h3>主要水系</h3><ul class="clean"><li><b>急水溪、八掌溪</b>：北部，流經白河、東山。</li><li><b>曾文溪</b>：臺南母親河，上游有曾文、烏山頭、南化水庫，是南部重要水源。</li><li><b>鹽水溪、二仁溪</b>：南部，流經新化、龍崎、關廟。</li></ul><p style="margin-top:8px">國土綠網把這一帶列入「曾文溪流域保育軸帶」，串連山與海。</p></div></div>`,
+ '地質景觀':`<div class="grid2"><div><h3>泥岩惡地</h3><p>左鎮、龍崎一帶是古近海沉積的泥岩，乾季堅硬龜裂、雨季泡水軟化，植物不易生長，形成「月世界」般的灰白山丘，如左鎮草山月世界、龍崎牛埔。泥岩惡地容易沖蝕，是水土保持教育的天然教室。</p></div><div><h3>化石之鄉</h3><p>左鎮菜寮溪沿岸出土大量更新世哺乳動物化石，以及有名的「左鎮人」化石，菜寮化石館是全臺重要的化石博物館。</p><p style="margin-top:8px">北邊的白河、東山則是砂頁岩丘陵，坡地適合種龍眼、咖啡、柳丁。</p></div></div>`,
+ '生態物種':`<div class="grid2"><div><h3>代表物種</h3><ul class="clean"><li><b>草鴞</b>（第一級）：大內、新化、關廟、龍崎一帶草生地與農田是重要棲地。</li><li><b>石虎</b>（第一級）：2006 年白河鹿寮水庫曾有紀錄，近年在曾文溪下游自動相機再度拍到，代表棲地廊道仍有機會。</li><li><b>臺灣穿山甲、大冠鷲、鳳頭蒼鷹、領角鴞</b>：淺山森林常見。</li><li><b>白鼻心、臺灣野兔、赤腹松鼠</b>：果園周邊常見，也常有農損衝突。</li></ul></div><div><h3>植被特色</h3><ul class="clean"><li>刺竹、麻竹、綠竹林：早期聚落防禦與竹筍產業留下的地景。</li><li>泥岩惡地上的耐旱草本，如甜根子草、芒草、白茅，正是草鴞需要的草生地。</li><li>相思樹、構樹等次生林：早期薪炭林演替而來。</li></ul></div></div>`,
+ '產業':`<div class="grid3"><div><h4>東山</h4>咖啡、龍眼與傳統土窯「焙龍眼乾」。</div><div><h4>玉井・楠西</h4>愛文芒果、楊桃、梅子。</div><div><h4>南化</h4>龍眼、芒果、麻竹筍。</div><div><h4>左鎮</h4>白堊土栽種的破布子、芒果。</div><div><h4>龍崎</h4>竹筍與竹藝，以竹為主題的「龍崎光節」。</div><div><h4>關廟</h4>鳳梨、竹編、關廟麵。</div></div><p style="margin-top:12px">這些作物多種在坡地果園，使用除草劑或鼠藥與否，直接影響草鴞與猛禽的生存。把友善耕作變成產品賣點，是臺南淺山保育的關鍵。</p>`,
+ '人文歷史':`<ul class="clean"><li><b>西拉雅族</b>：大內頭社、東山吉貝耍保存阿立祖信仰與夜祭，是臺南淺山重要的文化資產；西拉雅國家風景區即以此命名。</li><li><b>噍吧哖事件（1915）</b>：發生在玉井一帶的大規模抗日事件。</li><li><b>水利開發</b>：日治時期八田與一主持興建烏山頭水庫與嘉南大圳，改變嘉南平原的農業。</li><li><b>人口變遷</b>：多數淺山行政區人口老化、外移，農地出現廢耕，也影響傳統聚落的延續。</li></ul>`,
+ '面臨問題':`<div class="grid2"><div><h3>生態壓力</h3><ul class="clean"><li>果園使用除草劑、滅鼠藥，造成猛禽二次毒害。</li><li>省道、縣道切過淺山，夜間路殺。</li><li>遊蕩犬貓攻擊穿山甲、草鴞幼鳥。</li><li>廢耕地自然演替成樹林，草鴞需要的草地反而變少。</li></ul></div><div><h3>開發壓力</h3><ul class="clean"><li>地面型光電、土石採取、掩埋場與廢棄物傾倒等開發案在淺山引發爭議。</li><li>露營區、休閒設施進入山區。</li><li>泥岩惡地沖蝕、坡地崩塌與水庫淤積。</li><li>人口老化讓土地無人管理。</li></ul></div></div>`,
+ '保育行動':`<ul class="clean"><li><b>草鴞生態服務給付</b>：臺南已推動到第 6 年，範圍從大內、新化、關廟 3 區擴大到麻豆、西港、安定、七股、歸仁、仁德等共 9 區。參與農民由 2021 年 9 人、8.2 公頃增加到 2025 年 27 人、27.21 公頃。</li><li><b>猛禽棲架</b>：2023 年先設 3 座，2025 年在仁德虎山農場新設示範棲架，請猛禽來農田捕鼠。</li><li><b>國土綠網曾文溪流域保育軸帶</b>：林業及自然保育署嘉義分署與臺南市野生動物保育學會進行淺山到平原的哺乳動物移動廊道調查。</li><li><b>官田水雉經驗</b>：2009 年水雉中毒事件後發展的綠色保育標章，是臺灣生態給付的起點，也就在臺南。</li><li><b>環境教育場域</b>：龍崎牛埔泥岩水土保持教學園區、菜寮化石館、草山月世界。</li></ul>`,
+ '踏查路線':`<div class="grid3"><div><h4>路線 A・惡地與化石</h4>菜寮化石館 → 草山月世界 → 龍崎牛埔泥岩水土保持教學園區。主題：地質、水土保持、草生地與草鴞。</div><div><h4>路線 B・果園與生態給付</h4>大內或新化參與生態給付的友善農地 → 猛禽棲架觀察 → 訪談農民。主題：食物鏈、二次毒害、生態服務給付。</div><div><h4>路線 C・山村文化</h4>東山咖啡公路與龍眼焙灶 → 吉貝耍部落 → 白河。主題：產業、西拉雅文化、人口變遷。</div></div><p class="note" style="margin-top:10px">出發前請先確認場館開放時間，並聯繫在地社區或保育團體帶路，夜間觀察需有專人陪同。</p>`
+};
+const tnt=$('#tnTabs');Object.keys(TN).forEach((k,i)=>{const b=document.createElement('button');b.className='btn'+(i?'':' on');b.textContent=k;b.onclick=()=>{$$('#tnTabs button').forEach(x=>x.classList.toggle('on',x===b));$('#tnBody').innerHTML=TN[k]};tnt.appendChild(b)});$('#tnBody').innerHTML=TN['地理範圍'];
+
+/* ---------- 9. 模擬 ---------- */
+const OPT={forest:['次生林保留',3,0,1],friendly:['友善果園（草生栽培）',2,2,1],conv:['慣行果園（除草劑・鼠藥）',-1,3,0],paddy:['草生地・友善旱田',2,1,1],fallow:['廢耕荒地',1,0,1],solar:['地面型光電',-2,3,0],house:['道路・住宅開發',-3,3,0]};
+const START=['forest','conv','conv','fallow','conv','house','forest','friendly','solar'];
+const BEST=['forest','forest','paddy','friendly','paddy','house','forest','friendly','friendly'];
+let S=START.slice();
+const grid=$('#simGrid');
+function drawGrid(){grid.innerHTML='';S.forEach((v,i)=>{const d=document.createElement('div');d.className='parcel p-'+v;d.innerHTML=`<label for="pc${i}">第 ${i+1} 塊地</label>`;const s=document.createElement('select');s.id='pc'+i;Object.entries(OPT).forEach(([k,o])=>{const op=document.createElement('option');op.value=k;op.textContent=o[0];if(k===v)op.selected=true;s.appendChild(op)});s.onchange=()=>{S[i]=s.value;drawGrid();calc()};d.appendChild(s);grid.appendChild(d)})}
+function adj(i){const r=Math.floor(i/3),c=i%3,o=[];if(c<2)o.push(i+1);if(r<2)o.push(i+3);return o}
+function calc(){const pes=$('#pPes').checked,pass=$('#pPass').checked,dog=$('#pDog').checked;
+ const cnt=k=>S.filter(x=>x===k).length;let bio=0,inc=0;S.forEach(k=>{bio+=OPT[k][1];inc+=OPT[k][2];if(pes&&(k==='friendly'||k==='paddy'))inc+=1});
+ let link=0;S.forEach((k,i)=>adj(i).forEach(j=>{if(OPT[k][3]&&OPT[S[j]][3])link++}));// 0..12
+ const poison=cnt('conv'),road=cnt('house'),hab=cnt('forest')+cnt('friendly');const grass=cnt('paddy')+cnt('fallow')+cnt('friendly')*0.5;
+ if(dog)bio+=2;
+ const B=Math.max(0,Math.min(100,Math.round((bio+15)/(27+15+2)*100)));
+ const I=Math.max(0,Math.min(100,Math.round(inc/27*100*1.35)));
+ let leo=hab*10+link*5-poison*12-road*(pass?6:14)+(dog?10:0);leo=Math.max(0,Math.min(100,Math.round(leo)));
+ let owl=grass*18+(pes?10:0)-poison*15-cnt('solar')*8+(dog?8:0);owl=Math.max(0,Math.min(100,Math.round(owl)));
+ const C=Math.round(link/12*100);
+ const ms=[['生物多樣性',B],['農民收入',I],['棲地連結度',C],['石虎出現機會',leo],['草鴞出現機會',owl]];
+ $('#meters').innerHTML=ms.map(([n,v])=>`<div class="meter"><span>${n}</span><div class="bar"><i class="${v<35?'bad':v<60?'warn':''}" style="width:${v}%"></i></div><b>${v}</b></div>`).join('');
+ const msg=[];
+ if(poison>=2)msg.push(['danger','有 '+poison+' 塊地使用鼠藥，老鼠中毒後成為石虎、草鴞的「毒餌」，頂層掠食者最先消失。']);
+ if(road&&!pass)msg.push(['danger','道路穿過棲地又沒有動物通道，夜間路殺風險高。']);
+ if(cnt('solar')>=2)msg.push(['danger','光電板覆蓋大面積草生地，草鴞失去獵場與巢位。']);
+ if(cnt('fallow')>=2)msg.push(['ochre','廢耕地短期是好草地，但幾年後會長成樹林；需要定期割草才能維持草鴞棲地。']);
+ if(I<40)msg.push(['ochre','農民收入偏低，村裡年輕人可能外移，土地將無人管理。試試開啟「生態服務給付」或改成友善果園。']);
+ if(B>=60&&I>=55)msg.push(['forest','生態與收入兼顧，這就是「里山」：生產、生活、生態三生共好。']);
+ if(leo>=60)msg.push(['forest','林地彼此相連，石虎可以安全地在村莊間移動。']);
+ if(owl>=60)msg.push(['forest','草生地夠多又沒有鼠藥，草鴞願意留下來幫農民抓老鼠。']);
+ if(!msg.length)msg.push(['muted','試著改變幾塊地的用途，或勾選左側政策，看看指標怎麼變。']);
+ $('#simMsg').innerHTML=msg.map(([c,t])=>`<p style="border-left:3px solid var(--${c==='muted'?'line':c});padding-left:10px;font-size:.92rem">${t}</p>`).join('')}
+['#pPes','#pPass','#pDog'].forEach(s=>$(s).addEventListener('change',calc));
+$('#simReset').onclick=()=>{S=START.slice();['#pPes','#pPass','#pDog'].forEach(s=>$(s).checked=false);drawGrid();calc()};
+$('#simBest').onclick=()=>{S=BEST.slice();['#pPes','#pPass','#pDog'].forEach(s=>$(s).checked=true);drawGrid();calc()};
+drawGrid();calc();
+
+/* ---------- 10. 測驗 ---------- */
+const Q=[
+ ['臺灣「淺山」大約指哪個海拔範圍？',['0～100 公尺','100～1000 公尺','1000～2500 公尺','2500 公尺以上'],1,'淺山多為海拔 1000 公尺以下的丘陵、低山，介於平原與中央山脈之間。'],
+ ['為什麼淺山保育不能只靠劃設保護區？',['淺山沒有珍貴物種','淺山大多是私有地，有人居住和耕作','淺山太高','保護區已經太多'],1,'國有林外的淺山以私有地為主，需要和農民、社區合作。'],
+ ['農田使用滅鼠藥，哪一種動物最可能被「二次毒害」？',['臺灣野兔','穿山甲','草鴞','赤腹松鼠'],2,'草鴞主要吃鼠類，吃到中毒的老鼠會累積毒素。'],
+ ['下列哪一種動物是第一級（瀕臨絕種）保育類？',['白鼻心','臺灣獼猴','食蛇龜','山羌'],2,'食蛇龜因走私壓力於 2019 年升為第一級；其餘三種已移為一般類。'],
+ ['日本里山面臨的主要問題，和臺灣淺山最大的不同是？',['日本是開發過度','日本是缺乏人為管理而荒廢','日本沒有野生動物','日本沒有農業'],1,'日本的「第二危機」是人用得太少；臺灣淺山則是開發與利用壓力大。'],
+ ['「生態服務給付」的核心精神是？',['禁止農民耕作','付錢給友善生態的農民，肯定他們守護棲地的貢獻','向農民罰款','由政府收購土地'],1,'讓保育成為農民可以獲得回饋的工作。'],
+ ['臺南左鎮、龍崎一帶的「月世界」地形，主要由什麼岩石構成？',['花崗岩','石灰岩','泥岩','玄武岩'],2,'泥岩乾時龜裂、遇水軟化，形成寸草難生的惡地地形。'],
+ ['2025 年日本施行的哪一部法律，讓民間守護的里山可以被國家認證？',['自然公園法','地域生物多樣性增進法','森林法','農地法'],1,'認證的場域稱為「自然共生サイト」，計入 30by30 保育目標。']
+];
+let score=0;const qz=$('#quiz');
+Q.forEach((q,i)=>{const d=document.createElement('div');d.className='q';d.innerHTML=`<h4>${i+1}. ${q[0]}</h4>`;const o=document.createElement('div');o.className='opts';const fb=document.createElement('p');fb.className='fb';
+ q[1].forEach((t,j)=>{const b=document.createElement('button');b.className='btn';b.textContent=t;b.onclick=()=>{if(d.dataset.done)return;d.dataset.done=1;if(j===q[2]){b.classList.add('right');score++;fb.innerHTML='<b style="color:var(--forest)">答對了！</b>'+q[3]}else{b.classList.add('wrong');o.children[q[2]].classList.add('right');fb.innerHTML='<b style="color:var(--danger)">再想想。</b>'+q[3]}$('#qScore').textContent='得分 '+score+' / 8'};o.appendChild(b)});
+ d.appendChild(o);d.appendChild(fb);qz.appendChild(d)});
+const ta=$('#reflect');try{ta.value=localStorage.getItem('qs-reflect')||''}catch(_){}
+ta.addEventListener('input',()=>{try{localStorage.setItem('qs-reflect',ta.value)}catch(_){}});
+$('#copyRef').onclick=()=>{const done=()=>$('#copyMsg').textContent='已複製，可以貼到表單了。';const fail=()=>{ta.select();$('#copyMsg').textContent='已選取文字，請按 Ctrl+C（手機長按）複製。'};
+ try{navigator.clipboard.writeText(ta.value).then(done,fail)}catch(_){fail()}};
+const PLAN=[['1','淺山在哪裡','第一展區地圖、海拔剖面；分組認領縣市熱點','學習單：畫出家鄉淺山範圍'],['2','誰吃誰','第二展區食物網、滅鼠藥模擬、食物鏈挑戰','繪製一張臺南淺山食物網'],['3','淺山住民','第三展區物種檔案，各組深究一個物種','物種報告卡（協作平台子頁）'],['4','里山來的啟示','第四～六展區比較日本與臺灣','比較表與「因為…所以…」論述'],['5','當一天村長','第七展區借鏡＋第九展區模擬，分組提出最佳配置','模擬截圖與決策理由'],['6','家鄉行動','第八展區臺南淺山＋第十展區測驗與省思','行動方案發表、測驗、省思寫作']];
+$('#planTable').innerHTML='<thead><tr><th>節</th><th>主題</th><th>活動</th><th>產出</th></tr></thead><tbody>'+PLAN.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')+'</tbody>';
+
+show('map');
+})();
+</script>
